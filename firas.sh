@@ -1,3 +1,12 @@
+
+stateDiagram-v2
+    [*] --> ValidateJSON
+    ValidateJSON --> CheckSeverity: JSON Validated
+    CheckSeverity --> HighOrCriticalIssueFound: Severity Check
+    HighOrCriticalIssueFound --> BlockProcess: High or Critical Issue
+    HighOrCriticalIssueFound --> NoIssueFound: No High or Critical Issue
+    BlockProcess --> [*]: Process Blocked
+    NoIssueFound --> [*]: No Issues Found
 promote_back_to_staging:
   stage: promote
   image: layer-kraft.registry.saas.capig.group.gca/ci-tools:latest
