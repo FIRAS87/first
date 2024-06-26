@@ -1,47 +1,24 @@
-stages:
-  - build
-  - promote
-
-buildBackJavaDocker:
-  stage: build
-  script:
-    - echo "Visualisation repertoire livrable"
-    - ls target/
-    - docker build --pull --no-cache --build-arg HTTP_PROXY=$HTTP_PROXY --build-arg HTTPS_PROXY=$HTTPS_PROXY --build-arg JDK_VERSION_IMAGE=$JDK_VERSION_IMAGE -t prez-tribu-back:$version_tag .
-    - docker tag prez-tribu-back:$version_tag $ARTIFACTORY_REGISTRY_SCRATCH/prez-tribu-back:$version_tag
-    - docker push $ARTIFACTORY_REGISTRY_SCRATCH/prez-tribu-back:$version_tag
-  after_script:
-    - docker logout $ARTIFACTORY_REGISTRY_SCRATCH
-  only:
-    - main
-
-promote_back_to_tagging:
+promote_back_to_staging:
   stage: promote
-  image: layer-kraft.registry.saas.capg.group.gca/ci-tools:latest
+  image: layer-kraft.registry.saas.capig.group.gca/ci-tools:latest
   before_script:
-    - export PROMOTE_TOKEN=$(kubi token --kubi-url kubi.prod.managed.lcl.gca --username $ARTIFACTORY_USER_ACCOUNT_HORS_PROD --password $ARTIFACTORY_USER_PASSWORD_HORS_PROD)
+    - export PROMOTE_TOKEN=$(kubi token --kubi-url kubi.prod.managed.lcl)
   needs: [buildBackJavaDocker]
   script:
-    - echo '{"paths":["artifactory/lcl1bdev-05975.metier-docker-scratch-intranet/prez-tribu-back/1.0.4"]}' > data.json
+    - docker logout $ARTIFACTORY_REGISTRY_SCRATCH --username $ARTIFACTORY_USER_ACCOUNT_HORS_PROD --password $ARTIFACTORY_USER_PASSW0RD_HORS_PROD
+    - echo '{"paths":["artifactory/lcl-libdev-05075-metier-docker-scratch.intranet/prez-tribu-back/1.0.4"]}' > data.json
     - cat data.json
-    - echo 'Constructed curl command:'
-    - echo "curl --location \"https://registry.saas.capg.group.gca/xray/api/v1/summary/artifact\" --header \"Authorization: Bearer ${TOKEN_XRAY}\" --header \"Content-Type: application/json\" --data @data.json -o response.json"
-    - curl --location "https://registry.saas.capg.group.gca/xray/api/v1/summary/artifact" --header "Authorization: Bearer ${TOKEN_XRAY}" --header "Content-Type: application/json" --data @data.json -o response.json
-    - cat response.json
-  only:
-    - promote
-
-promote_back_to_prod:
-  stage: promote
-  image: layer-kraft.registry.saas.capg.group.gca/ci-tools:latest
-  before_script:
-    - export PROMOTE_TOKEN=$(kubi token --kubi-url kubi.prod.managed.lcl.gca --username $ARTIFACTORY_USER_ACCOUNT_HORS_PROD --password $ARTIFACTORY_USER_PASSWORD_HORS_PROD)
-  script:
-    - echo '{"paths":["artifactory/lcl1bdev-05975.metier-docker-scratch-intranet/prez-tribu-back/1.0.4"]}' > data.json
-    - cat data.json
-    - echo 'Constructed curl command:'
-    - echo "curl --location \"https://registry.saas.capg.group.gca/xray/api/v1/summary/artifact\" --header \"Authorization: Bearer ${TOKEN_XRAY}\" --header \"Content-Type: application/json\" --data @data.json -o response.json"
-    - curl --location "https://registry.saas.capg.group.gca/xray/api/v1/summary/artifact" --header "Authorization: Bearer ${TOKEN_XRAY}" --header "Content-Type: application/json" --data @data.json -o response.json
-    - cat response.json
-  only:
-    - promote
+    - echo "Constructed curl command:"
+    - curl --location "https://registry.saas.capig.group.gca/xray/api/v1/summary/artifact" --header "Authorization:${TOKEN_XRAY}" --header "Content-Type:application/json" --data @data.json > response.json
+    - apt-get update && apt-get install -y jq
+    - |
+      # Check for high or critical severity issues using jq
+      data=$(cat response.json)
+      blocker_found=$(echo "$data" | jq '[.artifacts[]?.issues[]? | select(.severity | ascii_downcase == "high" or ascii_downcase == "critical")] | length')
+      if [ "$blocker_found" -gt 0 ]; then
+        echo "Blocage en raison d'un problème de gravité élevée ou critique trouvé."
+        exit 1
+      else
+        echo "Aucun problème de gravité élevée ou critique trouvé."
+      fi
+  when: manual
