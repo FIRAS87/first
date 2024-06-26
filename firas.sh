@@ -1,5 +1,36 @@
-
 flowchart TD
+  subgraph Intranet
+    subgraph Staging
+      A1[Utilisateur habilité sur projet "bleu"]
+      B1[Utilisateur habilité sur projet "jaune"]
+      C1[CustomerOps habilité]
+    end
+    subgraph Stable
+      A2[Utilisateur habilité sur projet "bleu"]
+      B2[Utilisateur habilité sur projet "jaune"]
+      C2[CustomerOps habilité]
+    end
+  end
+  
+  subgraph Extranet
+    subgraph Stable
+      A3[Utilisateur habilité sur projet "bleu"]
+      B3[Utilisateur habilité sur projet "jaune"]
+      C3[CustomerOps habilité]
+    end
+  end
+
+  A1 --> A2
+  B1 --> B2
+  C1 --> C2
+  A2 --> A3
+  B2 --> B3
+  C2 --> C3
+
+
+
+
+flowchart ah TD
   subgraph Intranet
     subgraph Staging
       A1[User - Projet "bleu"]
