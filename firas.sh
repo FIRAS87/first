@@ -1,3 +1,23 @@
+
+Quiz sur les Microservices
+
+Qu'est-ce qu'un microservice ?
+
+A. Une grande application monolithique
+B. Une petite application indépendante exécutant une fonction spécifique
+C. Une base de données partagée par plusieurs applications
+Quels outils sont utilisés pour scanner les images de conteneurs ?
+
+A. Visual Studio Code
+B. Trivy, Clair, JFrog Xray
+C. Slack
+Pourquoi doit-on surveiller les images des microservices ?
+
+A. Pour améliorer la vitesse de développement
+B. Pour détecter et corriger les vulnérabilités, assurer la conformité, et maintenir la performance
+C. Pour réduire le coût des licences logicielles
+
+
 flowchart TD
   subgraph Intranet
     subgraph Staging
