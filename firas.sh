@@ -1,4 +1,36 @@
 
+flowchart TD
+  subgraph Intranet
+    subgraph Staging
+      A1[User - Projet "bleu"]
+      B1[User - Projet "jaune"]
+      C1[CustomerOps]
+    end
+    subgraph Stable
+      A2[User - Projet "bleu"]
+      B2[User - Projet "jaune"]
+      C2[CustomerOps]
+    end
+  end
+  
+  subgraph Extranet
+    subgraph Stable
+      A3[User - Projet "bleu"]
+      B3[User - Projet "jaune"]
+      C3[CustomerOps]
+    end
+  end
+
+  A1 --> A2
+  B1 --> B2
+  C1 --> C2
+  A2 --> A3
+  B2 --> B3
+  C2 --> C3
+
+
+
+
 stateDiagram-v2
     [*] --> ValidateJSON
     ValidateJSON --> CheckSeverity: JSON Validated
