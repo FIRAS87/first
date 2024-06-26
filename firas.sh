@@ -1,4 +1,20 @@
+Based on the provided image, it looks like the data.json file is correctly containing the version tag, and the script is executing as expected. However, you want to see the high_count and critical_count in a table format.
+
+Let's update the script to print a more structured table format for high_count and critical_count.
+
+Here's the updated script portion in your .gitlab-ci.yml file:
+
+yaml
+Copier le code
 promote_back_to_staging:
+  stage: promote
+  image: layer-kraft.registry.saas.capig.group.gca/ci-tools:latest
+  before_script:
+    - export PROMOTE_TOKEN=$(kubi token --kubi-url kubi.prod.managed.lcl)
+  needs: [buildBackJavaDocker]
+  script:
+    - docker logout $ARTIFACTORY_REGISTRY_SCRATCH --username $ARTIFACTORY_USER_ACCOUNT_HORS_PROD --password $ARTIFACTORY_USER_PASSW0RD_HORS_PROD
+    - echo "{\"paths\":[\"artifactory/lcl-libdev-05075-metier-docker-scratch.intranet/prez-tribu-back/${version_tag}\"]}" > data.jsonrpromote_back_to_staging:
   stage: promote
   image: layer-kraft.registry.saas.capig.group.gca/ci-tools:latest
   before_script:
