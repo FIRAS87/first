@@ -8,21 +8,21 @@ yaml
 Copier le code
 promote_back_to_staging:
   stage: promote
-  image: layer-kraft.registry.saas.capig.group.gca/ci-tools:latest
+  image:
   before_script:
-    - export PROMOTE_TOKEN=$(kubi token --kubi-url kubi.prod.managed.lcl)
+    - export PROMOTE_TOKEN=$(kubi token --kubi-url kubi.prod.managed.xx)
   needs: [buildBackJavaDocker]
   script:
     - docker logout $ARTIFACTORY_REGISTRY_SCRATCH --username $ARTIFACTORY_USER_ACCOUNT_HORS_PROD --password $ARTIFACTORY_USER_PASSW0RD_HORS_PROD
-    - echo "{\"paths\":[\"artifactory/lcl-libdev-05075-metier-docker-scratch.intranet/prez-tribu-back/${version_tag}\"]}" > data.jsonrpromote_back_to_staging:
+    - echo "{\"paths\":[\"artifactory/xx-libdev-05075-metier-docker-scratch.intranetxx/${version_tag}\"]}" > data.jsonrpromote_back_to_staging:
   stage: promote
-  image: layer-kraft.registry.saas.capig.group.gca/ci-tools:latest
+  image: 
   before_script:
-    - export PROMOTE_TOKEN=$(kubi token --kubi-url kubi.prod.managed.lcl)
+    - export PROMOTE_TOKEN=$(kubi token --kubi-url kubi.prod.managed.xx)
   needs: [buildBackJavaDocker]
   script:
     - docker logout $ARTIFACTORY_REGISTRY_SCRATCH --username $ARTIFACTORY_USER_ACCOUNT_HORS_PROD --password $ARTIFACTORY_USER_PASSW0RD_HORS_PROD
-    - echo '{"paths":["artifactory/lcl-libdev-05075-metier-docker-scratch.intranet/prez-tribu-back/1.0.4"]}' > data.json
+    - echo '{"paths":["artifactory/xx-libdev-05075-metier-docker-scratch.intranetxx/1.0.4"]}' > data.json
     - cat data.json
     - echo "Constructed curl command:"
     - curl --location "https://registry.saas.capig.group.gca/xray/api/v1/summary/artifact" --header "Authorization:${TOKEN_XRAY}" --header "Content-Type:application/json" --data @data.json > response.json
@@ -137,11 +137,11 @@ promote_back_to_staging:
   stage: promote
   image: layer-kraft.registry.saas.capig.group.gca/ci-tools:latest
   before_script:
-    - export PROMOTE_TOKEN=$(kubi token --kubi-url kubi.prod.managed.lcl)
+    - export PROMOTE_TOKEN=$(kubi token --kubi-url kubi.prod.managed.xx)
   needs: [buildBackJavaDocker]
   script:
     - docker logout $ARTIFACTORY_REGISTRY_SCRATCH --username $ARTIFACTORY_USER_ACCOUNT_HORS_PROD --password $ARTIFACTORY_USER_PASSW0RD_HORS_PROD
-    - echo '{"paths":["artifactory/lcl-libdev-05075-metier-docker-scratch.intranet/prez-tribu-back/1.0.4"]}' > data.json
+    - echo '{"paths":["artifactory/xx-libdev-05075-metier-docker-scratch.intranetxx/1.0.4"]}' > data.json
     - cat data.json
     - echo "Constructed curl command:"
     - curl --location "https://registry.saas.capig.group.gca/xray/api/v1/summary/artifact" --header "Authorization:${TOKEN_XRAY}" --header "Content-Type:application/json" --data @data.json > response.json
