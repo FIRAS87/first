@@ -1,4 +1,31 @@
-
+promote_back_to_staging:
+  stage: promote
+  image: layer-kraft.registry.saas.capig.group.gca/ci-tools:latest
+  before_script:
+    - export PROMOTE_TOKEN=$(kubi token --kubi-url kubi.prod.managed.lcl)
+  needs: [buildBackJavaDocker]
+  script:
+    - docker logout $ARTIFACTORY_REGISTRY_SCRATCH --username $ARTIFACTORY_USER_ACCOUNT_HORS_PROD --password $ARTIFACTORY_USER_PASSW0RD_HORS_PROD
+    - echo '{"paths":["artifactory/lcl-libdev-05075-metier-docker-scratch.intranet/prez-tribu-back/1.0.4"]}' > data.json
+    - cat data.json
+    - echo "Constructed curl command:"
+    - curl --location "https://registry.saas.capig.group.gca/xray/api/v1/summary/artifact" --header "Authorization:${TOKEN_XRAY}" --header "Content-Type:application/json" --data @data.json > response.json
+    - apt-get update && apt-get install -y jq
+    - jq --version  # Check jq version
+    - |
+      # Check for high or critical severity issues using jq
+      data=$(cat response.json)
+      high_count=$(echo "$data" | jq '[.artifacts[]?.issues[]? | select(.severity | ascii_downcase == "high")] | length')
+      critical_count=$(echo "$data" | jq '[.artifacts[]?.issues[]? | select(.severity | ascii_downcase == "critical")] | length')
+      echo "Nombre de problèmes de gravité élevée : $high_count"
+      echo "Nombre de problèmes de gravité critique : $critical_count"
+      if [ "$high_count" -gt 0 ] || [ "$critical_count" -gt 0 ]; then
+        echo "Blocage en raison d'un problème de gravité élevée ou critique trouvé."
+        exit 1
+      else
+        echo "Aucun problème de gravité élevée ou critique trouvé."
+      fi
+  when: manual
 Quiz sur les Microservices
 
 Qu'est-ce qu'un microservice ?
