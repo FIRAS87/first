@@ -1,3 +1,33 @@
+Test Manuel avec l'Éditeur 53JS :
+
+S3 :
+Testé pour la gestion et le stockage des objets.
+Vérification de l'intégration avec les fonctions Lambda.
+API Gateway :
+Testé pour la gestion des API et la communication entre les services.
+Vérification de la redirection correcte des requêtes vers les fonctions Lambda.
+Lambda (NodeJS) :
+Testé pour l'exécution des tâches et des fonctions backend.
+Vérification des CRON jobs pour leur exécution planifiée.
+Validation de l'interaction avec S3, API Gateway et RDS.
+RDS (PostgreSQL) :
+Testé pour la gestion de la base de données relationnelle.
+Vérification de la connectivité et des opérations de lecture/écriture depuis Lambda.
+CloudWatch :
+Testé pour la surveillance et la journalisation.
+Validation de la réception des logs et des métriques des fonctions Lambda.
+Tests Automatisés :
+
+Authentification SSO :
+Vérification de la gestion des utilisateurs et de l'authentification via Single Sign-On.
+Notifications par Email (SES) :
+Testé pour l'envoi de notifications par email.
+Vérification de l'intégration avec Lambda pour l'envoi automatique des emails en cas d'événements spécifiques.
+En résumé, tous les composants de l'architecture ont été testés manuellement avec l'éditeur 53JS, et les fonctions d'authentification et de notification ont été vérifiées par des tests automatisés pour assurer leur bon fonctionnement dans l'ensemble du système.
+
+
+
+
 Based on the provided image, it looks like the data.json file is correctly containing the version tag, and the script is executing as expected. However, you want to see the high_count and critical_count in a table format.
 
 Let's update the script to print a more structured table format for high_count and critical_count.
